@@ -12,14 +12,15 @@ public class Node {
 		}
 	}
 	
-	public State state = new State();
+	public State state;
 	private int g, h;
 	public Tracer T;
 	
 	public void initNode() {
-		state.map = Map.map;
+		state = new State();
+		System.arraycopy(Map.map, 0, state.map, 0, Map.map.length);
 		for (int c=0; c<Map.numFlow; c++)
-			state.cur.add(Map.begin[c]);
+			state.cur[c] = Map.begin[c].toByte();
 		
 		g = 0;
 		h = Map.N * Map.N - Map.numFlow;
@@ -34,22 +35,19 @@ public class Node {
 	public Node makeMove(int flow, int dir, int cost) {
 		Node next = new Node();
 		
-		Point newPos = new Point(state.cur.get(flow));
+		next.state = new State(state);
+		Point newPos = new Point(state.cur[flow]);
 		newPos.move(dir);
-		for (int c=0; c<Map.numFlow; c++)
-			if (c == flow)
-				next.state.cur.add(newPos);
-			else
-				next.state.cur.add(state.cur.get(c));
+		next.state.cur[flow] = newPos.toByte();
 		
 		int pos = newPos.getPos();
 		
-		next.state.map = state.map.substring(0, pos) + (char)flow + state.map.substring(pos + 1);
+		next.state.map[pos] = (byte)flow;
 		
 		next.g = g + cost;		
 		
-		next.h = h - Point.getManDist(state.cur.get(flow), Map.end[flow]) 
-				+ Point.getManDist(next.state.cur.get(flow), Map.end[flow]) - 1;
+		next.h = h - Point.getManDist(new Point(state.cur[flow]), Map.end[flow]) 
+				+ Point.getManDist(new Point(next.state.cur[flow]), Map.end[flow]) - 1;
 		
 		//next.h = h - 1;
 		
@@ -64,7 +62,7 @@ public class Node {
 		int activeFlow = -1, maxMoves = 0;
 		
 		for (int c=0; c<Map.numFlow; c++) {
-			if (state.cur.get(c).equals(Map.end[c])) continue;
+			if ((new Point(state.cur[c])).equals(Map.end[c])) continue;
 			
 			int moveCount = 0;
 			for (int d=0; d<4; d++)

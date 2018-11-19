@@ -1,62 +1,53 @@
 package solver;
 
-import java.util.HashMap;
+import java.util.*;
 
-public class Map {
-	public static final char dot = Character.MAX_VALUE;
-	
-	public static String map;
-	
+public class Map {	
+	public static byte[] map;	
 	public static int N, numFlow;
 	public static Point begin[], end[];
 	
+	public static HashMap<Character, Byte> flowId = new HashMap<>();
+	public static ArrayList<Character> flowColor = new ArrayList<>();
+	
 	public static void initMap(String[] puzzle) {
-		char[] code = decode(puzzle);
-
-		for (int i=0; i<N; i++)
-			for (int j=0; j<N; j++) {
-				int id = code[i * N + j];
-				if (id == dot || numFlow >= id) continue;
-				numFlow = id;
-			}
-		numFlow++;
-		
+		map = decode(puzzle);
 		begin = new Point[numFlow];
 		end = new Point[numFlow];
 		
 		for (int i=0; i<N; i++)
 			for (int j=0; j<N; j++) {
-				int f = code[i * N + j];
-				if (f == dot) continue;
+				int f = map[i * N + j];
+				if (f == -1) continue;
 				
 				if (begin[f] == null)
 					begin[f] = new Point(i, j);
 				else {
 					end[f] = new Point(i, j);
-					code[i * N + j] = dot;
+					map[i * N + j] = -1;
 				}
 				
 			}
-		map = new String(code);
 	}
 	
-	private static char[] decode(String[] puzzle) {
-		HashMap<Character, Integer> flowId = new HashMap<>();
-		int flow = 0;
+	private static byte[] decode(String[] puzzle) {		
+		numFlow = 0;
 		N = puzzle[0].length();
-		char[] code = new char[puzzle.length * puzzle.length];
+		byte[] code = new byte[N * N];
 		
 		for (int i=0; i<N; i++)
 			for (int j=0; j<N; j++) {
 				char c = puzzle[i].charAt(j);
 				if (c == '.')
-					code[i * N + j] = dot;
+					code[i * N + j] = -1;
 				else if (flowId.containsKey(c))
-					code[i * N + j] = (char)flowId.get(c).intValue();
+					code[i * N + j] = flowId.get(c);
 				else {
-					flowId.put(c, flow);
-					code[i * N + j] = (char)flow;
-					flow++;
+					byte id = (byte)numFlow;
+					flowId.put(c, id);
+					code[i * N + j] = id;
+					flowColor.add(c);
+					numFlow++;
 				}
 			}
 		

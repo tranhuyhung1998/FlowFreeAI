@@ -3,6 +3,11 @@ package solver;
 public class Point {
 	public int x, y;
 	
+	public Point(byte B) {
+		x = (B >> 4) & 0xf;
+		y = B & 0xf;
+	}
+	
 	@Override
 	public int hashCode() {
 		return x * Map.N + y;
@@ -11,6 +16,10 @@ public class Point {
 	@Override
 	public boolean equals(Object obj) {
 		return x == ((Point)obj).x && y == ((Point)obj).y;
+	}
+	
+	public byte toByte() {
+		return (byte)((x << 4) | y);
 	}
 	
 	public Point() {
@@ -43,6 +52,12 @@ public class Point {
 		case 2: ++x; break;
 		case 3: --y; break;
 		}
+	}
+	
+	public static byte move(byte B, int dir) {
+		Point P = new Point(B);
+		P.move(dir);
+		return P.toByte();
 	}
 	
 	public boolean isValid(int N) {

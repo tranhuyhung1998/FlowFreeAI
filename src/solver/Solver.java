@@ -41,9 +41,10 @@ public class Solver {
 			Node P = open.poll();
 			closed.put(P.state, P.T);
 			
-			P.state.printState();
+			//P.state.printState();
 			
 			if (P.isGoal()) {
+				P.state.printState();
 				makeSolution(P.state);
 				return;
 			}
@@ -71,15 +72,16 @@ public class Solver {
 		
 		while (!temp.isInitial()) {
 			Node.Tracer T = closed.get(temp);
-			Point lastPoint = temp.cur.get(T.flow);
+			Point lastPoint = new Point(temp.cur[T.flow]);
 			int pos = lastPoint.getPos();
 			
 			try {
 				res.write(new String(lastPoint.x + " " + lastPoint.y + " " + ((T.dir +2) % 4) + System.lineSeparator()));
 			} catch (IOException e) {}
-			temp.map = temp.map.substring(0, pos) + Map.dot + temp.map.substring(pos + 1);
+			temp.map[pos] = -1;
 			
 			lastPoint.move((T.dir +2) % 4);
+			temp.cur[T.flow] = lastPoint.toByte();
 		}
 		
 		try {
