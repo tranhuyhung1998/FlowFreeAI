@@ -2,6 +2,9 @@ package solver;
 
 import java.util.*;
 
+import branch_bound.ChokePoint;
+import branch_bound.Stranded;
+
 public class Map {	
 	public static byte[] map;	
 	public static int N, numFlow;
@@ -18,19 +21,22 @@ public class Map {
 		for (int i=0; i<N; i++)
 			for (int j=0; j<N; j++) {
 				int f = map[i * N + j];
-				if (f == -1) continue;
-				
-				if (begin[f] == null)
+				if (f == -1)
+					map[i * N + j] = -1;				
+				else if (begin[f] == null)
 					begin[f] = new Point(i, j);
 				else {
 					end[f] = new Point(i, j);
-					map[i * N + j] = -1;
+					map[i * N + j] = -2;
 				}
 				
 			}
+		
+		Stranded.init();
+		ChokePoint.init();
 	}
 	
-	private static byte[] decode(String[] puzzle) {		
+	private static byte[] decode(String[] puzzle) {	
 		numFlow = 0;
 		N = puzzle[0].length();
 		byte[] code = new byte[N * N];
@@ -42,12 +48,13 @@ public class Map {
 					code[i * N + j] = -1;
 				else if (flowId.containsKey(c))
 					code[i * N + j] = flowId.get(c);
-				else {
+				else {					
 					byte id = (byte)numFlow;
 					flowId.put(c, id);
 					code[i * N + j] = id;
 					flowColor.add(c);
 					numFlow++;
+					
 				}
 			}
 		

@@ -2,19 +2,13 @@ package solver;
 
 import java.util.ArrayList;
 
+import branch_bound.ForcedMove;
+
 public class Node {
-	public static class Tracer {
-		public int flow, dir;
-		
-		public Tracer(int flow, int dir) {
-			this.flow = flow;
-			this.dir = dir;
-		}
-	}
 	
 	public State state;
 	private int g, h;
-	public Tracer T;
+	public Node parent;
 	
 	public void initNode() {
 		state = new State();
@@ -23,35 +17,24 @@ public class Node {
 			state.cur[c] = Map.begin[c].toByte();
 		
 		g = 0;
-		h = Map.N * Map.N - Map.numFlow;
+		state.free = Map.N * Map.N - Map.numFlow;
 		
 		for (int c=0; c<Map.numFlow; c++) {
 			h += Point.getManDist(Map.begin[c], Map.end[c]);
 		}
-		
-		T = new Tracer(-1, -1);
+		parent = null;
 	}
 	
 	public Node makeMove(int flow, int dir, int cost) {
 		Node next = new Node();
 		
-		next.state = new State(state);
-		Point newPos = new Point(state.cur[flow]);
-		newPos.move(dir);
-		next.state.cur[flow] = newPos.toByte();
-		
-		int pos = newPos.getPos();
-		
-		next.state.map[pos] = (byte)flow;
+		next.state = state.makeMove(flow, dir);
+		if (next.state == null)
+			return null;
 		
 		next.g = g + cost;		
-		
-		next.h = h - Point.getManDist(new Point(state.cur[flow]), Map.end[flow]) 
-				+ Point.getManDist(new Point(next.state.cur[flow]), Map.end[flow]) - 1;
-		
-		//next.h = h - 1;
-		
-		next.T = new Tracer(flow, dir);
+		next.h = next.state.h();	
+		next.parent = this;
 		
 		return next;
 	}
@@ -59,29 +42,38 @@ public class Node {
 	
 	
 	public ArrayList<Node> makeAllMoves() {
-		int activeFlow = -1, maxMoves = 0;
-		
+		ArrayList<Node> allMoves = new ArrayList<Node>();
+		int activeFlow = -1, minWall = Map.N;
+
 		for (int c=0; c<Map.numFlow; c++) {
-			if ((new Point(state.cur[c])).equals(Map.end[c])) continue;
+			if ((state.finished & (1 << c)) != 0) continue;
 			
-			int moveCount = 0;
-			for (int d=0; d<4; d++)
-				if (state.tryMove(c, d))
-					moveCount++;
+			int moveCode = ForcedMove.findMoves(state, c);
+			int moveCount = moveCode >> 2;
+			if (moveCount == 1) {
+				Node N = makeMove(c, moveCode & 3, 0);
+				if (N != null)
+					allMoves.add(N);
+				return allMoves;
+			}
 			
-			if (moveCount > maxMoves) {
-				maxMoves = moveCount;
+			int dist = new Point(state.cur[c]).getWallMinDist(Map.N);
+			if (dist < minWall) {
+				minWall = dist;
 				activeFlow = c;
 			}
-		}
+		}	
 		
-		if (maxMoves == 0)
-			return null;
+		if (activeFlow == -1)
+			return allMoves;
 		
-		ArrayList<Node> allMoves = new ArrayList<Node>();
 		for (int d=0; d<4; d++)
-			if (state.tryMove(activeFlow, d))
-				allMoves.add(makeMove(activeFlow, d, (maxMoves==1 ? 0 : 1)));
+			if (state.tryMove(activeFlow, d)) {
+				Node N = makeMove(activeFlow, d, 1);
+				if (N != null)
+					allMoves.add(N);
+			}
+				
 		
 		return allMoves;
 	}
@@ -91,7 +83,6 @@ public class Node {
 	}
 	
 	public boolean isGoal() {
-		return h == 0;
-		//return h == 0 && state.isGoal();
+		return state.isGoal();
 	}
 }
