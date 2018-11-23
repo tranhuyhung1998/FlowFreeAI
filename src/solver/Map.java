@@ -3,7 +3,9 @@ package solver;
 import java.util.*;
 
 import branch_bound.ChokePoint;
+import branch_bound.ForcedMove;
 import branch_bound.Stranded;
+import structs.Point;
 
 public class Map {	
 	public static byte[] map;	
@@ -34,6 +36,7 @@ public class Map {
 		
 		Stranded.init();
 		ChokePoint.init();
+		ForcedMove.init();
 	}
 	
 	private static byte[] decode(String[] puzzle) {	

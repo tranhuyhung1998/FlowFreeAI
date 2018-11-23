@@ -1,6 +1,8 @@
 package branch_bound;
 
 import solver.*;
+import structs.Point;
+import structs.State;
 
 public class DeadEnd {
 	// Kiem tra trang thai S co bi dead end tai diem P
@@ -12,7 +14,7 @@ public class DeadEnd {
 				continue;
 			int nbFlow = S.map[neighbor.getPos()];
 			
-			if (nbFlow <= -1 || ((S.finished & (1 << nbFlow)) == 0 && neighbor.toByte() == S.cur[nbFlow]))
+			if (nbFlow <= -1 || ((S.finished & (1 << nbFlow)) == 0) && (neighbor.toByte() == S.cur[nbFlow]))
 				countFreeBorders++;
 		}
 		

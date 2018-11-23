@@ -1,6 +1,11 @@
 package solver;
 
 import java.util.*;
+
+import structs.Node;
+import structs.Point;
+import structs.State;
+
 import java.io.*;
 
 public class AStar {
@@ -60,10 +65,7 @@ public class AStar {
 		return null;
 	}
 	
-	public static void makeSolution(Node P) throws Exception {
-		FileWriter res = null;
-		
-		res = new FileWriter("Solution.txt");
+	public static void makeSolution(Node P, FileWriter res) throws Exception {
 		
 		if (P == null)
 			res.write("No Solution!");

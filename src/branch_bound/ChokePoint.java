@@ -1,6 +1,8 @@
 package branch_bound;
 
 import solver.*;
+import structs.Point;
+import structs.State;
 
 public class ChokePoint {
 	private static State tempS;

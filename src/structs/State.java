@@ -1,18 +1,23 @@
-package solver;
+package structs;
 
 import java.util.*;
 import branch_bound.*;
+import solver.Map;
 
 public class State {
-	public byte[] map = new byte[Map.N * Map.N];
-	public byte[] cur = new byte[Map.numFlow];
+	public byte[] map;
+	public byte[] cur;
 	
 	public int free, last = 0, finished = 0;
 	
 	public State() {
+		map = new byte[Map.N * Map.N];
+		cur = new byte[Map.numFlow];
 	}
 	
 	public State(State S) {
+		map = new byte[Map.N * Map.N];
+		cur = new byte[Map.numFlow];
 		copy(S);
 	}
 	
@@ -44,13 +49,21 @@ public class State {
 	}
 	
 	public boolean tryMove(int flow, int dir) {
-		Point pos = new Point(cur[flow], dir);
+		Point P = new Point(cur[flow], dir);
 		
-		if (!pos.isValid(Map.N)) 
+		if (!P.isValid(Map.N)) 
 			return false;	
-		if (map[pos.getPos()] == -1 || pos.toByte() == Map.end[flow].toByte())
-			return true;
-		return false;
+		if (map[P.getPos()] != -1 && !P.equals(Map.end[flow]))
+			return false;
+		
+		for (int d=0; d<4; d++) {
+			Point Q = new Point(P, d);
+			if (!Q.isValid(Map.N) || map[Q.getPos()] == -1)
+				continue;
+			if (map[Q.getPos()] == flow && Q.toByte() != cur[flow] && !Q.equals(Map.end[flow]))
+				return false;
+		}
+		return true;
 	}
 	
 	public State makeMove(int flow, int dir) {
@@ -74,11 +87,22 @@ public class State {
 		return next;
 	}
 	
-	public int h() {
+	private int h_Manhattan() {
+		int h = 0;
+		for (int c=0; c<Map.numFlow; c++)
+			h += Point.getManDist(new Point(cur[c]), Map.end[c]);
+		return h;
+	}
+	
+	private int h_Wall() {
 		int h = 0;
 		for (int c=0; c<Map.numFlow; c++)
 			h += new Point(cur[c]).getWallMinDist(Map.N);
 		return h;
+	}
+	
+	public int h() {
+		return free + h_Manhattan();
 	}
 	
 	public void printState() {

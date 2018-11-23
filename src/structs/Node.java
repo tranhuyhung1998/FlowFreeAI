@@ -1,8 +1,9 @@
-package solver;
+package structs;
 
 import java.util.ArrayList;
 
 import branch_bound.ForcedMove;
+import solver.Map;
 
 public class Node {
 	
@@ -43,33 +44,38 @@ public class Node {
 	
 	public ArrayList<Node> makeAllMoves() {
 		ArrayList<Node> allMoves = new ArrayList<Node>();
-		int activeFlow = -1, minWall = Map.N;
+		int activeFlow = -1, minMoves = 5;
 
+		Node N = this;
+		int forced = ForcedMove.findForcedMove(state);
+		if (forced != -1) {
+			//while (forced != -1) {
+				N = N.makeMove(forced >> 2, forced & 3, 0);
+				if (N == null)
+					return allMoves;
+				//forced = ForcedMove.findForcedMove(N.state);
+				//N.state.printState();
+			//}
+			allMoves.add(N);
+			return allMoves;
+		}
+		
 		for (int c=0; c<Map.numFlow; c++) {
-			if ((state.finished & (1 << c)) != 0) continue;
-			
-			int moveCode = ForcedMove.findMoves(state, c);
-			int moveCount = moveCode >> 2;
-			if (moveCount == 1) {
-				Node N = makeMove(c, moveCode & 3, 0);
-				if (N != null)
-					allMoves.add(N);
-				return allMoves;
-			}
-			
-			int dist = new Point(state.cur[c]).getWallMinDist(Map.N);
-			if (dist < minWall) {
-				minWall = dist;
+			int count = ForcedMove.moveCounts[c];
+			if (count == -1)
+				continue;
+			if (count < minMoves) {
+				minMoves = count;
 				activeFlow = c;
 			}
-		}	
+		}
 		
 		if (activeFlow == -1)
 			return allMoves;
 		
 		for (int d=0; d<4; d++)
 			if (state.tryMove(activeFlow, d)) {
-				Node N = makeMove(activeFlow, d, 1);
+				N = makeMove(activeFlow, d, minMoves==1?0:1);
 				if (N != null)
 					allMoves.add(N);
 			}

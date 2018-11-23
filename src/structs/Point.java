@@ -1,4 +1,6 @@
-package solver;
+package structs;
+
+import solver.Map;
 
 public class Point {
 	public int x, y;

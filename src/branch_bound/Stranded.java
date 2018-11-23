@@ -3,6 +3,8 @@ package branch_bound;
 import java.util.HashMap;
 
 import solver.*;
+import structs.Point;
+import structs.State;
 
 public class Stranded {
 	public static int[] par = null;
