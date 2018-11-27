@@ -2,10 +2,10 @@ package solver;
 
 import java.util.*;
 
-import branch_bound.ChokePoint;
-import branch_bound.ForcedMove;
-import branch_bound.Stranded;
-import structs.Point;
+import solver.branch_bound.ChokePoint;
+import solver.branch_bound.ForcedMove;
+import solver.branch_bound.Stranded;
+import solver.structs.Point;
 
 public class Map {	
 	public static byte[] map;	
@@ -22,7 +22,7 @@ public class Map {
 		
 		for (int i=0; i<N; i++)
 			for (int j=0; j<N; j++) {
-				int f = map[i * N + j];
+				byte f = map[i * N + j];
 				if (f == -1)
 					map[i * N + j] = -1;				
 				else if (begin[f] == null)
@@ -30,13 +30,21 @@ public class Map {
 				else {
 					end[f] = new Point(i, j);
 					map[i * N + j] = -2;
+					
+					if (Param.out_in && begin[f].getWallMinDist(N) > end[f].getWallMinDist(N)) {
+						Point P = begin[f];
+						begin[f] = end[f];
+						end[f] = P;
+						
+						map[begin[f].getPos()] = f;
+						map[end[f].getPos()] = -2;
+					}
 				}
 				
 			}
 		
 		Stranded.init();
 		ChokePoint.init();
-		ForcedMove.init();
 	}
 	
 	private static byte[] decode(String[] puzzle) {	

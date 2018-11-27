@@ -1,10 +1,8 @@
-package branch_bound;
+package solver.branch_bound;
 
 import java.util.HashMap;
-
 import solver.*;
-import structs.Point;
-import structs.State;
+import solver.structs.*;
 
 public class Stranded {
 	public static int[] par = null;
@@ -28,8 +26,7 @@ public class Stranded {
 	}
 	
 	// Phan vung o trong bang Disjoint-set
-	private static void buildZones(State S) {
-		
+	private static void buildZones(State S) {	
 		
 		// Thuc hien Disjoint-set tren vung cac o trong
 		for (int i=0; i<Map.N; i++)
@@ -42,7 +39,7 @@ public class Stranded {
 			for (int j=0; j<Map.N; j++)
 				if (S.map[i * Map.N + j] == -1) {
 					Point P = new Point(i, j);
-					for (int dir = 1; dir <=2; dir++) {
+					for (int dir=1; dir<=2; dir++) {
 						Point Q = new Point(P, dir);
 						if (!Q.isValid(Map.N) || S.map[Q.getPos()] != -1)
 							continue;
@@ -96,7 +93,7 @@ public class Stranded {
 				// Vung nao ke voi vi tri hien tai cua flow, them flow vao vung do
 				Point P = new Point(S.cur[c], dir);
 				if (P.isValid(Map.N)) {
-					if (P.equals(Map.end[c]))
+					if (Param.selfTouchable && P.equals(Map.end[c]))
 						unstrandedFlows |= 1 << c;
 					if (zone[P.x][P.y] != -1)			
 						adjCur[zone[P.x][P.y]] |= 1 << c;

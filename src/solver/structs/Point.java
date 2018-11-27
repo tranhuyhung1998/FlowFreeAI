@@ -1,4 +1,4 @@
-package structs;
+package solver.structs;
 
 import solver.Map;
 
@@ -85,10 +85,11 @@ public class Point {
 	}
 	
 	public int getWallDist(int N) {
-		return Math.abs(N - 1 - x << 1) + Math.abs(N - 1 - y << 1);
+		return Math.min(x, N - 1 - x) + Math.min(y, N - 1 - y);
 	}
 	
 	public int getWallMinDist(int N) {
 		return Math.min(Math.min(x, N - 1 - x), Math.min(y, N - 1 - y));
 	}
+
 }

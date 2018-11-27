@@ -1,8 +1,7 @@
-package branch_bound;
+package solver.branch_bound;
 
 import solver.*;
-import structs.Point;
-import structs.State;
+import solver.structs.*;
 
 public class DeadEnd {
 	// Kiem tra trang thai S co bi dead end tai diem P

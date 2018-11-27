@@ -1,8 +1,9 @@
-package structs;
+package solver.structs;
 
 import java.util.*;
-import branch_bound.*;
+
 import solver.Map;
+import solver.branch_bound.*;
 
 public class State {
 	public byte[] map;
@@ -13,12 +14,6 @@ public class State {
 	public State() {
 		map = new byte[Map.N * Map.N];
 		cur = new byte[Map.numFlow];
-	}
-	
-	public State(State S) {
-		map = new byte[Map.N * Map.N];
-		cur = new byte[Map.numFlow];
-		copy(S);
 	}
 	
 	public void copy(State S) {
@@ -56,6 +51,9 @@ public class State {
 		if (map[P.getPos()] != -1 && !P.equals(Map.end[flow]))
 			return false;
 		
+		if (solver.Param.selfTouchable)
+			return true;
+		
 		for (int d=0; d<4; d++) {
 			Point Q = new Point(P, d);
 			if (!Q.isValid(Map.N) || map[Q.getPos()] == -1)
@@ -67,7 +65,8 @@ public class State {
 	}
 	
 	public State makeMove(int flow, int dir) {
-		State next = new State(this);
+		State next = new State();
+		next.copy(this);
 		
 		Point newPos = new Point(cur[flow], dir);
 		
@@ -80,30 +79,11 @@ public class State {
 		
 		next.free--;
 		next.last = flow;
-		
-		if (next.isUnsolvable())
-			return null;
-		
+				
 		return next;
 	}
 	
-	private int h_Manhattan() {
-		int h = 0;
-		for (int c=0; c<Map.numFlow; c++)
-			h += Point.getManDist(new Point(cur[c]), Map.end[c]);
-		return h;
-	}
 	
-	private int h_Wall() {
-		int h = 0;
-		for (int c=0; c<Map.numFlow; c++)
-			h += new Point(cur[c]).getWallMinDist(Map.N);
-		return h;
-	}
-	
-	public int h() {
-		return free + h_Manhattan();
-	}
 	
 	public void printState() {
 		System.out.println();

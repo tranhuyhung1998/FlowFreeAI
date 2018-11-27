@@ -1,21 +1,15 @@
-package branch_bound;
-
-import java.util.ArrayList;
+// XU LY TIM FORCED MOVE (NUOC DI BAT BUOC)
+package solver.branch_bound;
 
 import solver.*;
-import structs.Point;
-import structs.State;
+import solver.structs.*;
 
 public class ForcedMove {
-	public static int[] moveCounts;
 	
-	public static void init() {
-		moveCounts = new int[Map.numFlow];
-	}
-	
+	// Kiem tra tai trang thai S, huong "direct" cua flow nay co phai nuoc di bat buoc?
 	private static boolean isForced(State S, int flow, int direct) {
 		Point P = new Point(S.cur[flow], direct);
-		if (P.equals(Map.end[flow]))
+		if (!Param.selfTouchable && P.equals(Map.end[flow]))
 			return true;
 		
 		int countFree = 0;
@@ -24,7 +18,9 @@ public class ForcedMove {
 		for (int dir=0; dir<4; dir++) {
 			Point Q = new Point(P, dir);
 			
-			if (!Q.isValid(Map.N) || Q.toByte() == S.cur[flow] || Q.equals(Map.end[flow]))
+			if (!Q.isValid(Map.N) || Q.toByte() == S.cur[flow])
+				continue;
+			if (!Param.selfTouchable && Q.equals(Map.end[flow]))
 				continue;
 			int pos = Q.getPos();
 			if (S.map[pos] == -1)
@@ -38,28 +34,34 @@ public class ForcedMove {
 		return (countFree == 1) && (countOtherEnds == 0);
 	}
 	
+	// Tim huong di bat buoc cua flow tai trang thai S
 	public static int findForcedDir(State S, int flow) {
-		int moveCount = 0;
+		int moveCount = 0, oneDir = -1;;
 		
 		for (int dir=0; dir<4; dir++)
 			if (S.tryMove(flow, dir)) {
 				moveCount++;
+				oneDir = dir;
 				if (isForced(S, flow, dir)) {
 					//System.out.println("Forced: " + Map.flowColor.get(flow) + " " + dir);
 					//S.printState();
 					return dir;
 				}
 			}
-		moveCounts[flow] = moveCount;
+
+		if (moveCount == 1)
+			return oneDir;
 		return -1;
 	}
 	
+	// Tim xem trang thai S co nuoc di bat buoc nao ko?
+	// - Neu ko, tra ve -1
+	// - Neu co, tra ve 2 bit cuoi la huong di, con lai la id cua flow
 	public static int findForcedMove(State S) {
 		for (int c=0; c<Map.numFlow; c++) {
-			if ((S.finished & (1 << c)) != 0) {
-				moveCounts[c] = -1;
+			if ((S.finished & (1 << c)) != 0)
 				continue;
-			}
+
 			int dir = findForcedDir(S, c);
 			if (dir != -1)
 				return (c << 2) | dir;

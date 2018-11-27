@@ -1,23 +1,26 @@
+// NHAP XUAT DU LIEU VA XU LY A*
+
 package solver;
 
 import java.util.*;
 
-import structs.Node;
-import structs.Point;
-import structs.State;
+import solver.structs.*;
 
 import java.io.*;
 
 public class AStar {
 	
+	// Tap "open" trong ly thuyet
 	PriorityQueue<Node> open = new PriorityQueue<>(new Comparator<Node>() {
 		public int compare(Node o1, Node o2) {
 			return o1.f().compareTo(o2.f());
 		};
 	});
 
+	// Tap "closed" trong ly thuyet
 	HashSet<State> closed = new HashSet<>(); 
 	
+	// Nhap du lieu tu file
 	public AStar(String fileName) throws Exception {
 		Scanner inp = new Scanner(new File(fileName));
 		
@@ -33,6 +36,8 @@ public class AStar {
 		inp.close();
 	}
 	
+	
+	// This is A*!
 	public Node Solution() {
 		int nodeCount = 0;
 		Node initial = new Node();
@@ -42,7 +47,7 @@ public class AStar {
 		while (!open.isEmpty()) {
 			
 			Node P = open.poll();
-			//closed.add(P.state);
+			closed.add(P.state);
 			
 			//P.state.printState();
 			System.out.println(++nodeCount);
@@ -55,8 +60,8 @@ public class AStar {
 			ArrayList<Node> nodeList = P.makeAllMoves();
 
 			for (Node Q: nodeList) {
-				//if (closed.contains(Q.state) /*|| open.contains(Q)*/)
-					//continue;
+				if (closed.contains(Q.state) || open.contains(Q))
+					continue;
 				
 				open.add(Q);
 			}
@@ -65,6 +70,7 @@ public class AStar {
 		return null;
 	}
 	
+	// Xuat ket qua ra file
 	public static void makeSolution(Node P, FileWriter res) throws Exception {
 		
 		if (P == null)

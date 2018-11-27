@@ -1,8 +1,7 @@
-package branch_bound;
+package solver.branch_bound;
 
 import solver.*;
-import structs.Point;
-import structs.State;
+import solver.structs.*;
 
 public class ChokePoint {
 	private static State tempS;
@@ -22,16 +21,22 @@ public class ChokePoint {
 			
 			tempS.copy(S);
 			int bottleneckSize = 0;
-			while (filler.isValid(Map.N) && tempS.map[filler.getPos()] == -1) {
+			while (bottleneckSize < 3) {
 				tempS.map[filler.getPos()] = (byte)lastFlow;
 				bottleneckSize++;
 				filler.move(dir);
+				if (!filler.isValid(Map.N) || tempS.map[filler.getPos()] != -1) {
+					filler.move((dir + 2) >> 2);
+					break;
+				}
 			}
-			filler.move((dir + 2) >> 2);
+			
 			tempS.cur[lastFlow] = filler.toByte();
 			
-			if (Stranded.check(tempS, lastFlow) > bottleneckSize)
+			if (Stranded.check(tempS, lastFlow) > bottleneckSize) {
+				//System.out.println("oh no");
 				return true;
+			}
 				
 		}
 		
