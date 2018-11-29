@@ -105,11 +105,11 @@ public class State {
 	}
 	
 	public boolean isUnsolvable() {
-		if (DeadEnd.exist(this))
+		if (Map.deadEnd.exist(this))
 			return true;
-		if (Stranded.check(this, -1) != 0)
+		if (Map.stranded.check(this, -1) != 0)
 			return true;
-		if (ChokePoint.exist(this))
+		if (Map.chokePoint.exist(this))
 			return true;
 		return false;
 	}

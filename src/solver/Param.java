@@ -1,6 +1,8 @@
 package solver;
 
 public class Param {
+	public static final int maxNode = 2000000;
+	
 	// Co cho phep flow quay lai cham cac nut da qua ko
 	public static boolean selfTouchable = false;
 	
@@ -10,8 +12,11 @@ public class Param {
 	// Chi di theo 1 flow hay sinh tat ca flow
 	public static boolean activeColor = true;
 	
-	// Co sap xep thu tu flow duoc di ko
-	public static boolean sortColor = true;
+	// Sap xep thu tu flow duoc di
+	// 0: ko sort
+	// 1: sort theo so nuoc di
+	// 2: sort theo tuong
+	public static int sortColor = 2;
 	
 	// Co su dung tia nhanh ko
 	public static boolean diagnose = true;
@@ -19,6 +24,9 @@ public class Param {
 	// Search tu ngoai vao
 	public static boolean out_in = true;
 	
+	// Co xai ham g ko
+	public static boolean g = false;
+	
 	// Chon ham h
-	public static int h = 0;
+	public static int h = 7;
 }

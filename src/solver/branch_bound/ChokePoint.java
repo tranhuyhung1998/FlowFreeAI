@@ -4,13 +4,13 @@ import solver.*;
 import solver.structs.*;
 
 public class ChokePoint {
-	private static State tempS;
+	private State tempS;
 	
-	public static void init() {
+	public ChokePoint() {
 		tempS = new State();
 	}
 	
-	public static boolean exist(State S) {
+	public boolean exist(State S) {
 		int lastFlow = S.last;		
 		Point lastPoint = new Point(S.cur[lastFlow]);
 		
@@ -33,7 +33,7 @@ public class ChokePoint {
 			
 			tempS.cur[lastFlow] = filler.toByte();
 			
-			if (Stranded.check(tempS, lastFlow) > bottleneckSize) {
+			if (Map.stranded.check(tempS, lastFlow) > bottleneckSize) {
 				//System.out.println("oh no");
 				return true;
 			}

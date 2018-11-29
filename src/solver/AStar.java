@@ -3,6 +3,7 @@
 package solver;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import solver.structs.*;
 
@@ -11,18 +12,18 @@ import java.io.*;
 public class AStar {
 	
 	// Tap "open" trong ly thuyet
-	PriorityQueue<Node> open = new PriorityQueue<>(new Comparator<Node>() {
+	private PriorityQueue<Node> open = new PriorityQueue<>(new Comparator<Node>() {
 		public int compare(Node o1, Node o2) {
 			return o1.f().compareTo(o2.f());
 		};
 	});
 
 	// Tap "closed" trong ly thuyet
-	HashSet<State> closed = new HashSet<>(); 
+	private HashSet<State> closed = new HashSet<>(); 
 	
 	// Nhap du lieu tu file
-	public AStar(String fileName) throws Exception {
-		Scanner inp = new Scanner(new File(fileName));
+	public AStar(File test) throws Exception {
+		Scanner inp = new Scanner(test);
 		
 		String one = inp.nextLine();
 		int N = one.length();
@@ -37,8 +38,8 @@ public class AStar {
 	}
 	
 	
-	// This is A*!
-	public Node Solution() {
+	// Giai thuat A*
+	public String solve(AtomicInteger nodeCnt) {
 		int nodeCount = 0;
 		Node initial = new Node();
 		initial.initNode();
@@ -50,11 +51,16 @@ public class AStar {
 			closed.add(P.state);
 			
 			//P.state.printState();
-			System.out.println(++nodeCount);
+			++nodeCount;
+			if (nodeCount == Param.maxNode) {
+				nodeCnt.set(nodeCount);
+				return "LimitExceed";
+			}
 			
 			if (P.isGoal()) {
-				P.state.printState();
-				return P;
+				//P.state.printState();
+				nodeCnt.set(nodeCount);
+				return "Solved";
 			}
 			
 			ArrayList<Node> nodeList = P.makeAllMoves();
@@ -67,7 +73,8 @@ public class AStar {
 			}
 		}
 
-		return null;
+		nodeCnt.set(nodeCount);
+		return "NoSolution";
 	}
 	
 	// Xuat ket qua ra file

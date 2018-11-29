@@ -5,13 +5,13 @@ import solver.*;
 import solver.structs.*;
 
 public class Stranded {
-	public static int[] par = null;
-	public static int[][] zone = null;
-	private static HashMap<Integer, Integer> zoneId = new HashMap<>(); 
-	private static int zoneNum, unstrandedFlows;
-	private static int[] adjCur, adjEnd;
+	public int[] par = null;
+	public int[][] zone = null;
+	private HashMap<Integer, Integer> zoneId = new HashMap<>(); 
+	private int zoneNum, unstrandedFlows;
+	private int[] adjCur, adjEnd;
 		
-	public static void init() {
+	public Stranded() {
 		par = new int[Map.N * Map.N];
 		zone = new int[Map.N][Map.N];
 		
@@ -19,14 +19,14 @@ public class Stranded {
 		adjEnd = new int[Map.N * Map.N];
 	}
 	
-	private static int anc(int pos) {
+	private int anc(int pos) {
 		if (pos == par[pos])
 			return pos;
 		return anc(par[pos]);
 	}
 	
 	// Phan vung o trong bang Disjoint-set
-	private static void buildZones(State S) {	
+	private void buildZones(State S) {	
 		
 		// Thuc hien Disjoint-set tren vung cac o trong
 		for (int i=0; i<Map.N; i++)
@@ -78,7 +78,7 @@ public class Stranded {
 	}
 	
 	// Danh dau vung nao ke voi vi tri hien tai va cuoi cua flow bang bitmask
-	private static void markNeighborZones(State S) {
+	private void markNeighborZones(State S) {
 		unstrandedFlows = S.finished;
 		
 		for (int z=0; z<zoneNum; z++)
@@ -117,7 +117,7 @@ public class Stranded {
 			+ Tra ve 0 neu khong co vung bi chan
 			+ Tra ve -1 neu co vung bi chan
 	*/
-	public static int check(State S, int chokeFlow) {
+	public int check(State S, int chokeFlow) {
 		buildZones(S);
 		markNeighborZones(S);
 		

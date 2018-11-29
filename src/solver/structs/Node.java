@@ -61,13 +61,13 @@ public class Node {
 
 		if (Param.forcedMove) {
 			Node N = this;
-			int forced = ForcedMove.findForcedMove(N.state);
+			int forced = Map.forcedMove.findForcedMove(N.state);
 			if (forced != -1) {
 				while (forced != -1) {
 					N = N.makeMove(forced >> 2, forced & 3, 0);
 					if (N == null)
 						return allMoves;
-					forced = ForcedMove.findForcedMove(N.state);
+					forced = Map.forcedMove.findForcedMove(N.state);
 					//N.state.printState();
 				}
 				allMoves.add(N);
@@ -88,13 +88,16 @@ public class Node {
 					moveCounts[c]++;
 		}
 		
-		if (Param.sortColor) {
+		if (Param.sortColor != 0) {
 			color.sort(new Comparator<Integer>() {
 	
 				@Override
 				public int compare(Integer o1, Integer o2) {
-					int cp = ((Integer)moveCounts[o1]).compareTo(moveCounts[o2]);
-					if (!Param.out_in || cp != 0) return cp;
+					int cp;
+					if (Param.sortColor == 1) {
+						cp = ((Integer)moveCounts[o1]).compareTo(moveCounts[o2]);
+						if (!Param.out_in || cp != 0) return cp;
+					}
 					Point P1 = new Point(state.cur[o1]), P2 = new Point(state.cur[o2]);
 					cp = ((Integer)P1.getWallMinDist(Map.N)).compareTo(P2.getWallMinDist(Map.N));
 					if (cp != 0) return cp;
@@ -191,13 +194,17 @@ public class Node {
 		case 2: return h_RealWall();
 		case 3: return h_Manhattan();
 		case 4: return state.free + 2 * h_Wall() + 3 * h_Manhattan();
+		case 5: return state.free + h_Manhattan();
+		case 6: return state.free + h_Wall();
+		case 7: return state.free + 3 * h_Wall() + h_Manhattan();	
+		case 8: return 3 * h_Wall() + h_Manhattan();
 		default: return 0;
 		}
 	}
 	
 	// Tinh ham f de sap xep thu tu cac Node trong A*
 	public Integer f() {
-		return g + h;
+		return (Param.g?g:0) + h;
 	}
 	
 	// Kiem tra nut hien tai da la dich chua

@@ -7,7 +7,7 @@ import solver.structs.*;
 public class ForcedMove {
 	
 	// Kiem tra tai trang thai S, huong "direct" cua flow nay co phai nuoc di bat buoc?
-	private static boolean isForced(State S, int flow, int direct) {
+	private boolean isForced(State S, int flow, int direct) {
 		Point P = new Point(S.cur[flow], direct);
 		if (!Param.selfTouchable && P.equals(Map.end[flow]))
 			return true;
@@ -35,7 +35,7 @@ public class ForcedMove {
 	}
 	
 	// Tim huong di bat buoc cua flow tai trang thai S
-	public static int findForcedDir(State S, int flow) {
+	public int findForcedDir(State S, int flow) {
 		int moveCount = 0, oneDir = -1;;
 		
 		for (int dir=0; dir<4; dir++)
@@ -57,7 +57,7 @@ public class ForcedMove {
 	// Tim xem trang thai S co nuoc di bat buoc nao ko?
 	// - Neu ko, tra ve -1
 	// - Neu co, tra ve 2 bit cuoi la huong di, con lai la id cua flow
-	public static int findForcedMove(State S) {
+	public int findForcedMove(State S) {
 		for (int c=0; c<Map.numFlow; c++) {
 			if ((S.finished & (1 << c)) != 0)
 				continue;

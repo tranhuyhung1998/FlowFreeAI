@@ -2,9 +2,7 @@ package solver;
 
 import java.util.*;
 
-import solver.branch_bound.ChokePoint;
-import solver.branch_bound.ForcedMove;
-import solver.branch_bound.Stranded;
+import solver.branch_bound.*;
 import solver.structs.Point;
 
 public class Map {	
@@ -15,7 +13,14 @@ public class Map {
 	public static HashMap<Character, Byte> flowId = new HashMap<>();
 	public static ArrayList<Character> flowColor = new ArrayList<>();
 	
+	public static ForcedMove forcedMove;
+	public static DeadEnd deadEnd;
+	public static Stranded stranded;
+	public static ChokePoint chokePoint;
+	
 	public static void initMap(String[] puzzle) {
+		flowId.clear();
+		flowColor.clear();
 		map = decode(puzzle);
 		begin = new Point[numFlow];
 		end = new Point[numFlow];
@@ -43,8 +48,10 @@ public class Map {
 				
 			}
 		
-		Stranded.init();
-		ChokePoint.init();
+		forcedMove = new ForcedMove();
+		deadEnd = new DeadEnd();
+		stranded = new Stranded();
+		chokePoint = new ChokePoint();
 	}
 	
 	private static byte[] decode(String[] puzzle) {	

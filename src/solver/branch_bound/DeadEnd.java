@@ -5,7 +5,7 @@ import solver.structs.*;
 
 public class DeadEnd {
 	// Kiem tra trang thai S co bi dead end tai diem P
-	public static boolean isDeadEnd(State S, Point P) {
+	public boolean isDeadEnd(State S, Point P) {
 		int countFreeBorders = 0;
 		for (int dir=0; dir<4; dir++) {
 			Point neighbor = new Point(P, dir);
@@ -21,7 +21,7 @@ public class DeadEnd {
 	}
 		
 	// Kiem tra trang thai S co ton tai dead end
-	public static boolean exist(State S) {
+	public boolean exist(State S) {
 		Point P = new Point(S.cur[S.last]);
 		
 		for (int dir=0; dir<4; dir++) {
