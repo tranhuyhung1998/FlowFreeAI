@@ -52,6 +52,7 @@ public class AStar {
 			
 			//P.state.printState();
 			++nodeCount;
+			
 			if (nodeCount == Param.maxNode) {
 				nodeCnt.set(nodeCount);
 				return "LimitExceed";

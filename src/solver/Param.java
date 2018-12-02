@@ -16,7 +16,7 @@ public class Param {
 	// 0: ko sort
 	// 1: sort theo so nuoc di
 	// 2: sort theo tuong
-	public static int sortColor = 2;
+	public static int sortColor = 0;
 	
 	// Co su dung tia nhanh ko
 	public static boolean diagnose = true;
@@ -24,9 +24,12 @@ public class Param {
 	// Search tu ngoai vao
 	public static boolean out_in = true;
 	
-	// Co xai ham g ko
+	// Co su dung ham g ko
 	public static boolean g = false;
 	
 	// Chon ham h
-	public static int h = 7;
+	public static int h = 0;
+	
+	// Trong so g so voi h
+	public static double bias = 0.5;
 }

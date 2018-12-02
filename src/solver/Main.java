@@ -6,7 +6,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class Main {
 	public static void main(String args[]) throws Exception {
 		File puzzles = new File("puzzles");
-		FileWriter output = new FileWriter("Solution.txt");
+		FileWriter output = new FileWriter("test/Solution.txt");
 		
 		//for (File test: puzzles.listFiles()) {
 		File test = new File("puzzles/extreme_8x8_01.txt");
