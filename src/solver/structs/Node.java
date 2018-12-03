@@ -84,7 +84,7 @@ public class Node {
 			
 			color.add(c);
 			for (int d=0; d<4; d++)
-				if (state.tryMove(c, d))
+				if (state.tryMove(c, d) != -1)
 					moveCounts[c]++;
 		}
 		
@@ -111,12 +111,17 @@ public class Node {
 			return allMoves;
 		
 		for (Integer c: color) {
-			for (int d=0; d<4; d++)
-				if (state.tryMove(c, d)) {
-					Node N = makeMove(c, d, moveCounts[c]==1?0:1);
-					if (N != null)
-						allMoves.add(N);
-				}
+			for (int d=0; d<4; d++) {
+				int move = state.tryMove(c, d);
+				if (move == -1) continue;
+				
+				int cost = 1;
+				if (move == 0 || moveCounts[c] == 1)
+					cost = 0;
+				Node N = makeMove(c, d, cost);
+				if (N != null)
+					allMoves.add(N);
+			}
 			if(Param.activeColor)
 				break;
 		}

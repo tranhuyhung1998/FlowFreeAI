@@ -39,7 +39,7 @@ public class ForcedMove {
 		int moveCount = 0, oneDir = -1;;
 		
 		for (int dir=0; dir<4; dir++)
-			if (S.tryMove(flow, dir)) {
+			if (S.tryMove(flow, dir) != -1) {
 				moveCount++;
 				oneDir = dir;
 				if (isForced(S, flow, dir)) {

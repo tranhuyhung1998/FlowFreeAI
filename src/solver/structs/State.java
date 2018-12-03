@@ -43,25 +43,24 @@ public class State {
 		return (finished == ((1 << Map.numFlow) - 1)) && (free == 0);
 	}
 	
-	public boolean tryMove(int flow, int dir) {
+	public int tryMove(int flow, int dir) {
 		Point P = new Point(cur[flow], dir);
 		
 		if (!P.isValid(Map.N)) 
-			return false;	
+			return -1;	
 		if (map[P.getPos()] != -1 && !P.equals(Map.end[flow]))
-			return false;
+			return -1;
 		
-		if (solver.Param.selfTouchable)
-			return true;
+		if (!solver.Param.selfTouchable)
+			for (int d=0; d<4; d++) {
+				Point Q = new Point(P, d);
+				if (!Q.isValid(Map.N) || map[Q.getPos()] == -1)
+					continue;
+				if (map[Q.getPos()] == flow && Q.toByte() != cur[flow] && !Q.equals(Map.end[flow]))
+					return -1;
+			}
 		
-		for (int d=0; d<4; d++) {
-			Point Q = new Point(P, d);
-			if (!Q.isValid(Map.N) || map[Q.getPos()] == -1)
-				continue;
-			if (map[Q.getPos()] == flow && Q.toByte() != cur[flow] && !Q.equals(Map.end[flow]))
-				return false;
-		}
-		return true;
+		return P.equals(Map.end[flow]) ? 0 : 1;
 	}
 	
 	public State makeMove(int flow, int dir) {
