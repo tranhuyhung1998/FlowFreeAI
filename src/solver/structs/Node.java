@@ -195,15 +195,10 @@ public class Node {
 	public int h() {
 		switch (Param.h) {
 		case 0: return state.free;
-		case 1: return h_RealWall();
-		case 2: return state.free + h_RealWall();
-		case 3: return h_Manhattan();
-		case 4: return state.free + 2 * h_Wall() + 3 * h_Manhattan();
-		case 5: return state.free + h_Manhattan();
-		case 6: return state.free + h_Wall();
-		case 7: return state.free + 5 * h_Wall() + h_Manhattan();	
-		case 8: return 3 * h_Wall() + h_Manhattan();
-		case 9: return state.free + 6 * h_RealWall() + h_Manhattan();	
+		case 1: return h_Wall();
+		case 2: return h_Manhattan();
+		case 3: return state.free + h_Wall();
+		case 4: return state.free + 5 * h_Wall() + h_Manhattan();	
 		default: return 0;
 		}
 	}

@@ -3,7 +3,6 @@
 package solver;
 
 import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import solver.structs.*;
 
@@ -19,7 +18,7 @@ public class AStar {
 	});
 
 	// Tap "closed" trong ly thuyet
-	private HashSet<State> closed = new HashSet<>(); 
+	public HashSet<State> closed = new HashSet<>(); 
 	
 	// Nhap du lieu tu file
 	public AStar(File test) throws Exception {
@@ -39,7 +38,7 @@ public class AStar {
 	
 	
 	// Giai thuat A*
-	public String solve(AtomicInteger nodeCnt) {
+	public String solve() {
 		int nodeCount = 0;
 		Node initial = new Node();
 		initial.initNode();
@@ -53,16 +52,12 @@ public class AStar {
 			//P.state.printState();
 			++nodeCount;
 			
-			if (nodeCount == Param.maxNode) {
-				nodeCnt.set(nodeCount);
+			if (nodeCount == Param.maxNode)
 				return "LimitExceed";
-			}
 			
-			if (P.isGoal()) {
+			if (P.isGoal())
 				//P.state.printState();
-				nodeCnt.set(nodeCount);
 				return "Solved";
-			}
 			
 			ArrayList<Node> nodeList = P.makeAllMoves();
 
@@ -74,7 +69,6 @@ public class AStar {
 			}
 		}
 
-		nodeCnt.set(nodeCount);
 		return "NoSolution";
 	}
 	
