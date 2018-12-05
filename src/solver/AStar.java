@@ -11,7 +11,7 @@ import java.io.*;
 public class AStar {
 	
 	// Tap "open" trong ly thuyet
-	private PriorityQueue<Node> open = new PriorityQueue<>(new Comparator<Node>() {
+	public PriorityQueue<Node> open = new PriorityQueue<>(new Comparator<Node>() {
 		public int compare(Node o1, Node o2) {
 			return o1.f().compareTo(o2.f());
 		};
@@ -39,7 +39,6 @@ public class AStar {
 	
 	// Giai thuat A*
 	public String solve() {
-		int nodeCount = 0;
 		Node initial = new Node();
 		initial.initNode();
 		open.add(initial);
@@ -50,9 +49,9 @@ public class AStar {
 			closed.add(P.state);
 			
 			//P.state.printState();
-			++nodeCount;
+			//System.out.println(nodeCount);
 			
-			if (nodeCount == Param.maxNode)
+			if (closed.size() > Param.maxClosed || open.size() > Param.maxOpen)
 				return "LimitExceed";
 			
 			if (P.isGoal())

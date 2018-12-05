@@ -10,7 +10,7 @@ public class Main {
 		
 		int testCnt = 0;
 		for (File test: puzzles.listFiles()) {
-		//File test = new File("puzzles/9x9_01.txt");
+		//File test = new File("puzzles/8x8_02.txt");
 			Scanner bound = new Scanner(test);
 			if (bound.nextLine().length() > Param.maxTestSize)
 				continue;
@@ -28,14 +28,14 @@ public class Main {
 				sol.solve();
 				
 				//time = System.currentTimeMillis() - time;
-				int nodeCount = sol.closed.size();
-				output.write(" " + ((nodeCount == Param.maxNode) ? "LE" : nodeCount));
+				int nodeClosed = sol.closed.size();
+				int nodeOpen = sol.open.size();
+				output.write(" " + ((nodeClosed > Param.maxClosed || nodeOpen > Param.maxOpen) ? "LE" : nodeClosed));
 			}
 			output.write(System.lineSeparator());
 			System.out.println("Done!");
 			System.out.println();
 			
-			//if (++testCnt > 2) break;
 		}
 		
 		output.close();
@@ -43,24 +43,42 @@ public class Main {
 	
 	public static void main(String args[]) throws Exception {
 		
-		Param.activeColor = false;
+		/*Param.activeColor = false;
 		Param.selfTouchable = true;
 		Param.maxTestSize = 9;
-		run(1);
+		run(1);*/
 		
 		Param.activeColor = true;
 		Param.selfTouchable = true;
 		Param.maxTestSize = 11;
 		run(2);
 		
+		/*Param.activeColor = true;
+		Param.selfTouchable = false;
+		Param.maxTestSize = 15;
+		run(3);*/
+		
+		/*Param.forcedMove = false;
+		Param.maxNode = 5000000;
+		
+		Param.activeColor = false;
+		Param.selfTouchable = true;
+		Param.maxTestSize = 9;
+		run(1001);
+		
+		Param.activeColor = true;
+		Param.selfTouchable = true;
+		Param.maxTestSize = 11;
+		run(1002);
+		
 		Param.activeColor = true;
 		Param.selfTouchable = false;
 		Param.maxTestSize = 15;
-		run(3);
+		run(1003);
 		
 		Param.activeColor = false;
 		Param.selfTouchable = false;
 		Param.maxTestSize = 11;
-		run(111);
+		run(1004);*/
 	}
 }

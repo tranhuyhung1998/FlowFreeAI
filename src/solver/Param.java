@@ -2,10 +2,11 @@ package solver;
 
 public class Param {
 	public static int maxTestSize = 15;
-	public static final int maxNode = 2000000;
+	public static int maxClosed = 2000000;
+	public static int maxOpen = 20000000;
 	
 	// Co cho phep flow quay lai cham cac nut da qua ko
-	public static boolean selfTouchable = false;
+	public static boolean selfTouchable = true;
 	
 	// Co tim nuoc di bat buoc ko
 	public static boolean forcedMove = true;
